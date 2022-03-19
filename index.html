@@ -17,9 +17,17 @@
     <main id="todos-app">
       <section id="todo-management">
         <h2>{{ newTodo }}</h2>
+        <p>{{ newTodo }}</p>
         <form @submit="saveTodo">
           <label for="text">Todo text</label>
-          <input type="text" id="text" name="text" required />
+          <input
+            type="text"
+            id="text"
+            name="text"
+            v-model="enteredTodoText"
+            required
+            autofocus
+          />
           <button>Save</button>
         </form>
       </section>
