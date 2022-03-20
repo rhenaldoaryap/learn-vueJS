@@ -16,6 +16,7 @@ const TodosApp = {
         // In Vue we couldn't use "this" keyword to referring to the data object because "this" keyword were inside of another function
         // this todoId trick will solve the issue
         const todoId = this.editedTodoId;
+
         // Find the index / id text that we want to edit
         const todoIndex = this.todos.findIndex(function (todoItem) {
           return todoItem.id === todoId;
@@ -28,6 +29,28 @@ const TodosApp = {
 
         this.todos[todoIndex] = updateTodoItem;
         this.editedTodoId = null;
+
+        let response;
+
+        try {
+          response = await fetch("http://localhost:3000/todos/" + todoId, {
+            method: "PATCH",
+            body: JSON.stringify({
+              newText: this.enteredTodoText,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        } catch (error) {
+          alert("Something went wrong!");
+          return;
+        }
+
+        if (!response.ok) {
+          alert("Something went wrong!");
+          return;
+        }
       } else {
         // Creating
         let response;
@@ -71,10 +94,26 @@ const TodosApp = {
       });
       this.enteredTodoText = todo.text;
     },
-    deleteTodo(todoId) {
+    async deleteTodo(todoId) {
       this.todos = this.todos.filter(function (todoItem) {
         return todoItem.id !== todoId;
       });
+
+      let response;
+
+      try {
+        response = await fetch("http://localhost:3000/todos/" + todoId, {
+          method: "DELETE",
+        });
+      } catch (error) {
+        alert("Something went wrong!");
+        return;
+      }
+
+      if (!response.ok) {
+        alert("Something went wrong!");
+        return;
+      }
     },
   },
   async created() {
